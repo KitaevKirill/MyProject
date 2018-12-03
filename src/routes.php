@@ -2,7 +2,7 @@
 
 return [
     '~^$~' => [\MyProject\Controllers\MainController::class, 'main'],
-    '~^poligon$~' => [\MyProject\Controllers\MainController::class, 'poligon'],
+    '~^poligon$~' => [\MyProject\Poligon::class, 'poligon'],
     '~^articles/(\d+)$~' => [\MyProject\Controllers\ArticlesController::class, 'view'],
     '~^articles/(\d+)/edit$~' => [\MyProject\Controllers\ArticlesController::class, 'edit'],
     '~^articles/create$~' => [\MyProject\Controllers\ArticlesController::class, 'create'],

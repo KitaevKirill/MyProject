@@ -1,12 +1,13 @@
 <?php
 
+require __DIR__ . '/../vendor/autoload.php';
 
 try {
-    spl_autoload_register(function (string $className) {
-        $classNameClear = str_replace("\\", "/", $className);
-        //var_dump($classNameClear);
-        require_once __DIR__ . '/../src/' . $classNameClear . '.php';
-    });
+//    spl_autoload_register(function (string $className) {
+//        $classNameClear = str_replace("\\", "/", $className);
+//        //var_dump($classNameClear);
+//        require_once __DIR__ . '/../src/' . $classNameClear . '.php';
+//    });
 
     $route = $_GET['route'] ?? '';
     $routes = require __DIR__ . '/../src/routes.php';

@@ -4,7 +4,7 @@ namespace MyProject\Models;
 
 use MyProject\Services\Db;
 
-abstract class ActiveRecordEntity
+abstract class ActiveRecordEntity implements \JsonSerializable
 {
 
     /** @var int */
@@ -36,7 +36,7 @@ abstract class ActiveRecordEntity
     {
         $db = Db::getInstance();
 
-       // var_dump($db);
+        // var_dump($db);
         return $db->query('SELECT * FROM `' . static::getTableName() . '`;', [], static::class);
     }
 
@@ -49,17 +49,17 @@ abstract class ActiveRecordEntity
     public static function getById(int $id)
     {
         $db = Db::getInstance();
-      //  var_dump($db);
+        //  var_dump($db);
         $entities = $db->query(
             'SELECT * FROM `' . static::getTableName() . '` WHERE id=:id;', [':id' => $id], static::class
         );
         return $entities ? $entities[0] : null;
     }
 
-    public static function getByArticleId(int $id) :?array
+    public static function getByArticleId(int $id): ?array
     {
         $db = Db::getInstance();
-          //var_dump($db);
+        //var_dump($db);
         $entities = $db->query(
             'SELECT * FROM `' . static::getTableName() . '` WHERE article_id=:id;', [':id' => $id], static::class
         );
@@ -72,7 +72,7 @@ abstract class ActiveRecordEntity
         $entities = $db->queryOne(
             'SELECT max(`id`) FROM ' . static::getTableName(), [], static::class
         );
-        return $entities ? $entities[0]: null;
+        return $entities ? $entities[0] : null;
     }
 
     public function save(): void
@@ -99,7 +99,7 @@ abstract class ActiveRecordEntity
         $sql = 'UPDATE ' . static::getTableName() . ' SET ' . implode(', ', $columns2params) . ' WHERE id = ' . $this->id;
         $db = Db::getInstance();
         $db->query($sql, $params2values, static::class);
-       // var_dump($sql);
+        // var_dump($sql);
         //var_dump($params2values);
     }
 
@@ -166,8 +166,7 @@ abstract class ActiveRecordEntity
         return $mappedProperties;
     }
 
-    private
-    function camelCaseToUnderscore(string $source): string
+    private function camelCaseToUnderscore(string $source): string
     {
         return strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $source));
     }
@@ -184,5 +183,10 @@ abstract class ActiveRecordEntity
             return null;
         }
         return $result[0];
+    }
+
+    public function jsonSerialize()
+    {
+        return $this->mapPropertiesToDbFormat();
     }
 }

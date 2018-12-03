@@ -17,6 +17,13 @@ class View {
         $this->extraVars[$name] = $value;
     }
 
+    public function displayJson($data, int $code = 200)
+    {
+        header('Content-type: application/json; charset=utf-8');
+        http_response_code($code);
+        echo json_encode($data);
+    }
+
     public function renderHtml(string $templateName, array $vars = [], int $code = 200) {
         http_response_code($code);
 
