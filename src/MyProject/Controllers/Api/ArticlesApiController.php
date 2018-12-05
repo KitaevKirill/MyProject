@@ -9,6 +9,7 @@
 namespace MyProject\Controllers\Api;
 
 use MyProject\Controllers\AbstractController;
+use MyProject\Exceptions\InvalidArgumentException;
 use MyProject\Exceptions\NotFoundException;
 use MyProject\Models\Articles\Article;
 use MyProject\Models\Users\User;
@@ -20,7 +21,7 @@ class ArticlesApiController extends AbstractController
         $article = Article::getById($articleId);
 
         if ($article === null) {
-            throw new NotFoundException();
+            throw new NotFoundException('Статья не найдена');
         }
 
         $this->view->displayJson([
@@ -30,9 +31,21 @@ class ArticlesApiController extends AbstractController
 
     public function add()
     {
-        $input = $this->getInputData();
-        $articleFromRequest = $input['articles'][0];
+        try {
+            $input = $this->getInputData();
+            $articleFromRequest = $input['articles'][0];
 
+            if ($articleFromRequest['text'] == null) {
+                throw new InvalidArgumentException('Не передан текст статьи');
+            }
+
+        } catch (InvalidArgumentException $e) {
+            $this->view->displayJson([
+                'error' => [$e->getMessage()]
+            ]);
+            return;
+        }
+        
         $authorId = $articleFromRequest['author_id'];
         $author = User::getById($authorId);
 
